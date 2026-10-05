@@ -16,8 +16,8 @@ if "connections" in st.secrets and "gsheets" in st.secrets["connections"]:
     spreadsheet_url = st.secrets["connections"]["gsheets"].get("spreadsheet")
 
 def load_database():
-    df_emi = pd.DataFrame(columns=["Date", "Month-Year", "Remarks", "EMI Category", "Amount"])
-    df_dis = pd.DataFrame(columns=["Date", "Month-Year", "Remarks",  "Amount"])
+    df_emi = pd.DataFrame(columns=["Date", "Month-Year", "EMI Remarks", "EMI Category", "Amount"])
+    df_dis = pd.DataFrame(columns=["Date", "Month-Year", "Disbursement Remarks", "Disbursement Category",  "Amount"])
 
     try:
         conn = st.connection("gsheets", type=GSheetsConnection)
@@ -29,7 +29,7 @@ def load_database():
         try:
             df_dis = conn.read(worksheet="Payment", ttl="0d")
             if df_dis.empty or "Amount" not in df_dis.columns:
-                df_dis = pd.DataFrame(columns=["Date", "Month-Year", "Disbursement Remarks", "Disbursement Category" "Amount"])
+                df_dis = pd.DataFrame(columns=["Date", "Month-Year", "Disbursement Remarks", "Disbursement Category", "Amount"])
         except: pass
         return df_emi, df_dis, True
     except:
