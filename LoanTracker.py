@@ -53,7 +53,7 @@ if not connection_status:
 else:
     st.sidebar.success("🔗 Connected to Live Google Sheet database.")
 
-menu_choice = st.sidebar.selectbox("Choose Operation Mode", ["Log New Transaction"])
+menu_choice = st.sidebar.selectbox("Choose Operation Mode", ["Log New Transaction", "Undo Last Record"])
 
 if menu_choice == "Log New Transaction":
     st.sidebar.subheader("📝 Transaction Input")
@@ -68,8 +68,7 @@ if menu_choice == "Log New Transaction":
         amount = st.number_input("Amount (₹)", min_value=0.0, step=1.0, format="%.2f")
 
         if "EMI" in tx_type:
-            spent_by = st.selectbox("Spent By", options=USER_OPTIONS, index=0)
-        submitted = st.form_submit_button("Save Entry")
+            submitted = st.form_submit_button("Save Entry")
         if submitted:
             if not connection_status: st.sidebar.error("Offline")
             elif not entity_name.strip(): st.sidebar.error("Blank Name")
@@ -87,16 +86,16 @@ if menu_choice == "Log New Transaction":
                     st.sidebar.success("Recorded entry!")
                     st.rerun()
 
-elif menu_choice == "Manage / Undo Records":
+elif menu_choice == "Undo Last Record":
     st.sidebar.subheader("⚠️ Ledger Maintenance")
-    del_target = st.sidebar.radio("Target Ledger Sheet", ["Expenses Ledger", "Income Ledger"])
+    del_target = st.sidebar.radio("Target Ledger Sheet", ["EMI Ledger", "Payment Ledger"])
     if st.sidebar.button("🗑️ Delete Most Recent Entry"):
         if not connection_status: st.sidebar.error("Offline")
-        elif del_target == "Expenses Ledger" and not df_expense.empty:
+        elif del_target == "EMI Ledger" and not df_emi.empty:
             df_emi = df_emi.drop(df_emi.index[-1])
             save_database(df_emi, df_dis)
             st.rerun()
-        elif del_target == "Income Ledger" and not df_income.empty:
+        elif del_target == "Payment Ledger" and not df_dis.empty:
             df_dis = df_dis.drop(df_dis.index[-1])
             save_database(df_emi, df_dis)
             st.rerun()
