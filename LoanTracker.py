@@ -70,7 +70,7 @@ if menu_choice == "Log New Transaction":
     with st.sidebar.form("transaction_form", clear_on_submit=True):
         selected_date = st.date_input("Date", datetime.today())
         month_year_str = selected_date.strftime("%B %Y")
-        entity_label = "EMI Remarks" if "EMI" in tx_type else "Remarks"
+        entity_label = "EMI Remarks" if "EMI" in tx_type else "Disbursement Remarks"
         entity_name = st.text_input(entity_label)
         cats_list = EMI_CATEGORIES if "EMI" in tx_type else DISBURSEMENT_CATEGORIES
         selected_cat = st.selectbox("Category", cats_list)
@@ -85,11 +85,11 @@ if menu_choice == "Log New Transaction":
                 date_str = selected_date.strftime("%Y-%m-%d")
                 if "EMI" in tx_type:
                     new_row = {"Date": date_str, "Month-Year": month_year_str, "EMI Remarks": entity_name, "EMI Category": selected_cat, "Amount": amount}
-                    df_emi = pd.concat([df_emi, pd.DataFrame([new_row])], ignore_index=True)
+                    df_emi = pd.concat([df_emi, pd.DataFrame([new_row])], ignore_index=False)
                 else:
                     new_row = {"Date": date_str, "Month-Year": month_year_str, "Disbursement Remarks": entity_name, "Disbursement Category": selected_cat, 
                                "Amount": amount}
-                    df_dis = pd.concat([df_dis, pd.DataFrame([new_row])], ignore_index=True)
+                    df_dis = pd.concat([df_dis, pd.DataFrame([new_row])], ignore_index=False)
                 if save_database(df_emi, df_dis):
                     st.sidebar.success("Recorded entry!")
                     st.rerun()
