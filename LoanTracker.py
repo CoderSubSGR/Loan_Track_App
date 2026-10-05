@@ -39,6 +39,13 @@ def save_database(df_emi, df_dis):
     if not spreadsheet_url: return False
     try:
         conn = st.connection("gsheets", type=GSheetsConnection)
+
+        # DEBUG: Print available worksheet names to the Streamlit app
+        client = conn._instance.client
+        sheet = client.open_by_url(spreadsheet_url)
+        available_sheets = [w.title for w in sheet.worksheets()]
+        st.write(f"Detected tabs in your Google Sheet: {available_sheets}")
+
         conn.update(worksheet="EMI", data=df_emi)
         conn.update(worksheet="Payment", data=df_dis)
         return True
