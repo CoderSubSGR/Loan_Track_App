@@ -29,7 +29,7 @@ def load_database():
         try:
             df_dis = conn.read(worksheet="Payment", ttl="0d")
             if df_dis.empty or "Amount" not in df_dis.columns:
-                dfdf_dis_inc = pd.DataFrame(columns=["Date", "Month-Year", "Disbursement Remarks", "Disbursement Category" "Amount"])
+                df_dis = pd.DataFrame(columns=["Date", "Month-Year", "Disbursement Remarks", "Disbursement Category" "Amount"])
         except: pass
         return df_emi, df_dis, True
     except:
@@ -42,7 +42,9 @@ def save_database(df_emi, df_dis):
         conn.update(worksheet="EMI", data=df_emi)
         conn.update(worksheet="Payment", data=df_dis)
         return True
-    except: return False
+    except Exception as e: 
+        st.error(f"Google Sheets API Error: {e}") 
+        return False
 
 st.set_page_config(page_title="Loan EMI Tracker Console", page_icon="📉", layout="wide")
 df_emi, df_dis, connection_status = load_database()
