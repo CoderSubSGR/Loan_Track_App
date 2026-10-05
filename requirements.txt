@@ -1,0 +1,7 @@
+pandas
+openpyxl
+matplotlib
+seaborn
+ipywidgets
+streamlit
+st-gsheets-connection
